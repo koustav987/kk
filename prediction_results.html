@@ -1,0 +1,109 @@
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header text-center">
+                <h2><i class="fas fa-seedling"></i> Predict Crop Yield</h2>
+                <p class="mb-0">Enter the parameters to predict crop yield</p>
+            </div>
+            <div class="card-body p-4">
+                <form method="post" action="{{ url_for('predict') }}">
+                    <div class="row">
+                        {% if categorical_cols %}
+                            {% for col in categorical_cols %}
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ col }}" class="form-label fw-bold">{{ col.replace('_', ' ').title() }}</label>
+                                {% if col == 'Area' %}
+                                    <select class="form-control" id="{{ col }}" name="{{ col }}" required>
+                                        <option value="">Select Area</option>
+                                        <option value="Punjab">Punjab</option>
+                                        <option value="Haryana">Haryana</option>
+                                        <option value="Uttar Pradesh">Uttar Pradesh</option>
+                                        <option value="Maharashtra">Maharashtra</option>
+                                        <option value="Karnataka">Karnataka</option>
+                                        <option value="Tamil Nadu">Tamil Nadu</option>
+                                        <option value="Andhra Pradesh">Andhra Pradesh</option>
+                                        <option value="West Bengal">West Bengal</option>
+                                        <option value="Rajasthan">Rajasthan</option>
+                                        <option value="Gujarat">Gujarat</option>
+                                    </select>
+                                {% elif col == 'Crop' %}
+                                    <select class="form-control" id="{{ col }}" name="{{ col }}" required>
+                                        <option value="">Select Crop</option>
+                                        <option value="Wheat">Wheat</option>
+                                        <option value="Rice">Rice</option>
+                                        <option value="Maize">Maize</option>
+                                        <option value="Sugarcane">Sugarcane</option>
+                                        <option value="Cotton">Cotton</option>
+                                        <option value="Groundnut">Groundnut</option>
+                                        <option value="Pulses">Pulses</option>
+                                        <option value="Potato">Potato</option>
+                                        <option value="Onion">Onion</option>
+                                        <option value="Tomato">Tomato</option>
+                                    </select>
+                                {% elif col == 'Soil_Type' %}
+                                    <select class="form-control" id="{{ col }}" name="{{ col }}" required>
+                                        <option value="">Select Soil Type</option>
+                                        <option value="Loamy">Loamy</option>
+                                        <option value="Sandy">Sandy</option>
+                                        <option value="Clay">Clay</option>
+                                        <option value="Silt">Silt</option>
+                                        <option value="Black">Black</option>
+                                        <option value="Red">Red</option>
+                                        <option value="Alluvial">Alluvial</option>
+                                    </select>
+                                {% else %}
+                                    <input type="text" class="form-control" id="{{ col }}" name="{{ col }}" 
+                                           placeholder="Enter {{ col.replace('_', ' ').lower() }}" required>
+                                {% endif %}
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+
+                        {% if numerical_cols %}
+                            {% for col in numerical_cols %}
+                            <div class="col-md-6 mb-3">
+                                <label for="{{ col }}" class="form-label fw-bold">
+                                    {{ col.replace('_', ' ').title() }}
+                                    {% if col == 'Temperature' %}(°C)
+                                    {% elif col == 'Humidity' %}(%)
+                                    {% elif col == 'Annual_Rainfall' %}(mm)
+                                    {% endif %}
+                                </label>
+                                <input type="number" step="0.01" class="form-control" id="{{ col }}" name="{{ col }}"
+                                       placeholder="Enter {{ col.replace('_', ' ').lower() }}" required
+                                       {% if col == 'Temperature' %}min="0" max="50"
+                                       {% elif col == 'Humidity' %}min="0" max="100"
+                                       {% elif col == 'PH' %}min="0" max="14"
+                                       {% elif col == 'Annual_Rainfall' %}min="0"
+                                       {% endif %}>
+                            </div>
+                            {% endfor %}
+                        {% endif %}
+                    </div>
+
+                    <div class="text-center mt-4">
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-calculator"></i> Predict Yield
+                        </button>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <div class="card mt-4">
+            <div class="card-body">
+                <h6 class="card-title"><i class="fas fa-lightbulb"></i> Tips for accurate predictions:</h6>
+                <ul class="mb-0">
+                    <li>Ensure temperature is in Celsius (0-50°C)</li>
+                    <li>Humidity should be between 0-100%</li>
+                    <li>pH values typically range from 4-9 for agricultural soils</li>
+                    <li>Annual rainfall in millimeters</li>
+                </ul>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

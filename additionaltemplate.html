@@ -1,0 +1,92 @@
+<!-- templates/results.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-10">
+        <div class="card">
+            <div class="card-header text-center">
+                <h2><i class="fas fa-chart-bar"></i> Model Training Results</h2>
+            </div>
+            <div class="card-body">
+                <div class="alert alert-success">
+                    <i class="fas fa-check-circle"></i> 
+                    <strong>Best Model:</strong> {{ best_model }}
+                </div>
+                
+                <div class="row">
+                    {% for model_name, metrics in results.items() %}
+                    <div class="col-md-6 mb-3">
+                        <div class="card h-100 {% if model_name == best_model %}border-success{% endif %}">
+                            <div class="card-body text-center">
+                                <h5 class="card-title">{{ model_name }}</h5>
+                                <p class="card-text">
+                                    <strong>R² Score:</strong> {{ "%.4f"|format(metrics.R2) }}<br>
+                                    <strong>RMSE:</strong> {{ "%.4f"|format(metrics.RMSE) }}
+                                </p>
+                                {% if model_name == best_model %}
+                                <span class="badge bg-success">Best Model</span>
+                                {% endif %}
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                </div>
+                
+                <div class="text-center mt-4">
+                    <a href="{{ url_for('predict_page') }}" class="btn btn-primary btn-lg">
+                        <i class="fas fa-seedling"></i> Start Predicting
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
+
+<!-- templates/prediction_result.html -->
+{% extends "base.html" %}
+
+{% block content %}
+<div class="row justify-content-center">
+    <div class="col-md-8">
+        <div class="card">
+            <div class="card-header text-center">
+                <h2><i class="fas fa-chart-line"></i> Prediction Result</h2>
+            </div>
+            <div class="card-body text-center">
+                <div class="alert alert-success p-4">
+                    <i class="fas fa-seedling fa-3x mb-3"></i>
+                    <h3>Predicted Crop Yield</h3>
+                    <h1 class="display-4 text-success">{{ prediction }}</h1>
+                    <p class="lead">tons per hectare</p>
+                </div>
+                
+                <div class="card mt-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-info-circle"></i> Input Parameters Used</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for key, value in input_data.items() %}
+                            <div class="col-md-6 mb-2">
+                                <strong>{{ key.replace('_', ' ').title() }}:</strong> {{ value }}
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="mt-4">
+                    <a href="{{ url_for('predict_page') }}" class="btn btn-primary me-2">
+                        <i class="fas fa-redo"></i> Predict Again
+                    </a>
+                    <a href="{{ url_for('home') }}" class="btn btn-secondary">
+                        <i class="fas fa-home"></i> Home
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %>
